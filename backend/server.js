@@ -41,6 +41,7 @@ const path = require('path');
 
 const errorHandler = require('./src/middleware/errorHandler');
 const { startCleanupSchedule } = require('./src/utils/cleanup');
+const { connectDB } = require('./src/config/mongodb');
 
 // ─── Route imports ──────────────────────────────────────────
 const organizeRoutes = require('./src/routes/organizeRoutes');
@@ -48,18 +49,20 @@ const editRoutes = require('./src/routes/editRoutes');
 const convertRoutes = require('./src/routes/convertRoutes');
 const securityRoutes = require('./src/routes/securityRoutes');
 const aiRoutes = require('./src/routes/aiRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── MIDDLEWARE ──────────────────────────────────────────────
 
-// CORS — Allow requests from frontend origin
+// CORS — Allow requests from frontend origin (includes Clerk auth headers)
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:8080',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Clerk-Auth'],
     exposedHeaders: ['X-Original-Size', 'X-Compressed-Size'],
+    credentials: true,
 }));
 
 // Security headers (Helmet)
@@ -114,25 +117,37 @@ app.use('/api/tools', convertRoutes);
 app.use('/api/tools', securityRoutes);
 app.use('/api/tools', aiRoutes);
 
+// User profile & settings routes (requires MongoDB)
+app.use('/api/user', userRoutes);
+
 // ─── ERROR HANDLER ──────────────────────────────────────────
 app.use(errorHandler);
 
 // ─── START ──────────────────────────────────────────────────
-app.listen(PORT, () => {
-    console.log(`\n🚀 ISHU PDF Tools Backend running on http://localhost:${PORT}`);
-    console.log(`📋 Health: http://localhost:${PORT}/api/health`);
-    console.log(`🔧 Tools:  http://localhost:${PORT}/api/tools/*`);
-    console.log(`🖥️  Frontend: ${process.env.FRONTEND_URL || 'http://localhost:8080'}`);
-    console.log(`\n📊 Tool Groups:`);
-    console.log(`   Organize:  9 tools  (merge, split, rotate, crop, rearrange, etc.)`);
-    console.log(`   Edit:      11 tools (watermark, sign, highlight, edit-text, etc.)`);
-    console.log(`   Convert:   77 tools (77+ format conversions with full aliases)`);
-    console.log(`   Security:  7 tools  (protect, unlock, redact, metadata, etc.)`);
-    console.log(`   AI/Utils:  12 tools (ocr, summarize, chat, compare, etc.)`);
-    console.log(`   TOTAL:     116 tools\n`);
+const startServer = async () => {
+    // Connect to MongoDB (non-blocking — PDF tools work without it)
+    await connectDB();
 
-    // Start automatic temp file cleanup scheduler
-    startCleanupSchedule();
-});
+    app.listen(PORT, () => {
+        console.log(`\n🚀 ISHU Backend running on http://localhost:${PORT}`);
+        console.log(`📋 Health: http://localhost:${PORT}/api/health`);
+        console.log(`🔧 Tools:  http://localhost:${PORT}/api/tools/*`);
+        console.log(`👤 User:   http://localhost:${PORT}/api/user/*`);
+        console.log(`🖥️  Frontend: ${process.env.FRONTEND_URL || 'http://localhost:8080'}`);
+        console.log(`\n📊 Tool Groups:`);
+        console.log(`   Organize:  9 tools  (merge, split, rotate, crop, rearrange, etc.)`);
+        console.log(`   Edit:      11 tools (watermark, sign, highlight, edit-text, etc.)`);
+        console.log(`   Convert:   77 tools (77+ format conversions with full aliases)`);
+        console.log(`   Security:  7 tools  (protect, unlock, redact, metadata, etc.)`);
+        console.log(`   AI/Utils:  12 tools (ocr, summarize, chat, compare, etc.)`);
+        console.log(`   User API:  6 routes (profile, stats, preferences, sync)`);
+        console.log(`   TOTAL:     122+ endpoints\n`);
+
+        // Start automatic temp file cleanup scheduler
+        startCleanupSchedule();
+    });
+};
+
+startServer();
 
 module.exports = app;

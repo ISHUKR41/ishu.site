@@ -43,6 +43,15 @@ import BlogPostPage from "./pages/BlogPostPage";
 import NewsArticlePage from "./pages/NewsArticlePage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import BookmarksPage from "./pages/BookmarksPage";
+import ExamTrackerPage from "./pages/ExamTrackerPage";
+import ActivityPage from "./pages/ActivityPage";
+import ToolHistoryPage from "./pages/ToolHistoryPage";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
 
 // Clerk publishable key from environment
 const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -83,6 +92,16 @@ const AppContent = () => {
       {/* Admin pages - only accessible to admin users */}
       <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
       <Route path="/admin/*" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
+
+      {/* Dashboard pages - protected routes with dashboard layout */}
+      <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><DashboardPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><DashboardLayout><SettingsPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><DashboardLayout><NotificationsPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/saved" element={<ProtectedRoute><DashboardLayout><BookmarksPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/tracker" element={<ProtectedRoute><DashboardLayout><ExamTrackerPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/activity" element={<ProtectedRoute><DashboardLayout><ActivityPage /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/tools/history" element={<ProtectedRoute><DashboardLayout><ToolHistoryPage /></DashboardLayout></ProtectedRoute>} />
 
       {/* 404 - catches all unmatched routes */}
       <Route path="*" element={<NotFound />} />

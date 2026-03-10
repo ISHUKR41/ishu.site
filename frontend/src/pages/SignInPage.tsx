@@ -38,7 +38,7 @@ const SignInPage = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) navigate("/", { replace: true });
+    if (user) navigate("/dashboard", { replace: true });
   }, [user, navigate]);
 
   // GSAP staggered entrance animations

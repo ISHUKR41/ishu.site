@@ -101,13 +101,17 @@ const Header = () => {
                   Admin
                 </Link>
               )}
+              {/* Dashboard link */}
+              <Link to="/dashboard" className="hidden rounded-lg border border-blue-500/30 bg-blue-500/5 px-3 py-2 text-xs font-medium text-blue-400 md:block hover:bg-blue-500/10 transition-all">
+                Dashboard
+              </Link>
               {/* User avatar and email */}
-              <div className="hidden items-center gap-2 md:flex">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                  <User size={14} className="text-primary" />
+              <Link to="/profile" className="hidden items-center gap-2 md:flex hover:opacity-80 transition-opacity">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-violet-500 shadow-lg shadow-blue-500/10">
+                  <span className="text-[10px] font-bold text-white">{user?.email?.charAt(0)?.toUpperCase() || "U"}</span>
                 </div>
                 <span className="text-sm font-medium text-foreground">{user.email?.split("@")[0]}</span>
-              </div>
+              </Link>
               {/* Sign out button */}
               <button onClick={handleSignOut} className="hidden items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:text-foreground md:flex">
                 <LogOut size={14} /> Sign Out
@@ -153,6 +157,9 @@ const Header = () => {
                       Admin Panel
                     </Link>
                   )}
+                  <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="flex-1 rounded-lg border border-blue-500/30 bg-blue-500/5 py-3 text-center text-sm font-medium text-blue-400">
+                    Dashboard
+                  </Link>
                   <button onClick={() => { handleSignOut(); setMobileOpen(false); }} className="flex-1 rounded-lg border border-border py-3 text-center text-sm font-medium text-foreground">
                     Sign Out
                   </button>
