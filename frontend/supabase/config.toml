@@ -1,0 +1,7 @@
+project_id = "yfwdnmuntenpjbzvjbhj"
+
+[functions.news-translate]
+verify_jwt = false
+
+[functions.pdf-ai-tools]
+verify_jwt = false
