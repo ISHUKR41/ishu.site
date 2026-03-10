@@ -293,7 +293,7 @@ const SignInPage = () => {
                       layout: {
                         socialButtonsPlacement: "bottom",
                         socialButtonsVariant: "blockButton",
-                        showOptionalFields: false,
+                        showOptionalFields: true,
                       },
                     }}
                   />

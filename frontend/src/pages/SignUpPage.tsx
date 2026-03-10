@@ -291,7 +291,7 @@ const SignUpPage = () => {
                       layout: {
                         socialButtonsPlacement: "bottom",
                         socialButtonsVariant: "blockButton",
-                        showOptionalFields: false,
+                        showOptionalFields: true,
                       },
                     }}
                   />
