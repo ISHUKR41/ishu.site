@@ -11,14 +11,14 @@
  * This middleware validates that token and extracts the user identity.
  */
 
-const { ClerkExpressRequireAuth } = require('@clerk/express');
+const { clerkMiddleware, requireAuth } = require('@clerk/express');
 
 /**
  * requireAuth — Middleware that REQUIRES a valid Clerk session.
  * Returns 401 if no valid token is found.
  * On success, sets req.auth.userId
  */
-const requireAuth = ClerkExpressRequireAuth({
+const requireAuthMiddleware = requireAuth({
     // Clerk will automatically read CLERK_SECRET_KEY from env
 });
 
@@ -48,4 +48,4 @@ const optionalAuth = (req, res, next) => {
     next();
 };
 
-module.exports = { requireAuth, optionalAuth };
+module.exports = { requireAuth: requireAuthMiddleware, optionalAuth };
